@@ -1,0 +1,38 @@
+const config = {
+  content: [
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './lib/**/*.{js,ts,jsx,tsx,mdx}',
+  ],
+  theme: {
+    extend: {
+      colors: {
+        navy: {
+          50: '#f0f2f9',
+          900: '#1a1f3a',
+          950: '#0f1219',
+        },
+        gold: {
+          400: '#d4af37',
+          500: '#c9a961',
+        },
+      },
+      fontFamily: {
+        serif: ['Georgia', 'serif'],
+        sans: ['system-ui', 'sans-serif'],
+      },
+      animation: {
+        'fade-in': 'fadeIn 0.5s ease-in',
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+      },
+    },
+  },
+  plugins: [],
+};
+
+export default config;
