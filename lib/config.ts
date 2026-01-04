@@ -61,6 +61,7 @@ export const CONFIG = {
   GALLERY_IMAGE_COLUMN: 'Gambar Url',
   GALLERY_CAPTION_COLUMN: 'Keterangan',
   GALLERY_DATE_COLUMN: 'Tanggal',
+  GALLERY_REVALIDATE: parseInt(process.env.NEXT_PUBLIC_GALLERY_REVALIDATE || '3600', 10),
 
   /**
    * Alternative: CSV export URL

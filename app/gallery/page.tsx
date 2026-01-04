@@ -6,6 +6,10 @@ import { CONFIG, SHEETS } from '@/lib/config';
 import { fetchSheetData } from '@/lib/sheetFetcher';
 import Link from 'next/link';
 
+// Revalidate gallery based on ENV configuration (NEXT_PUBLIC_GALLERY_REVALIDATE)
+// Configurable in .env.local. Default: 3600 seconds (1 hour)
+export const revalidate = CONFIG.GALLERY_REVALIDATE;
+
 export const metadata = {
   title: 'Galeri - Donasi Al-Qur\'an',
   description: 'Bukti pengiriman dan dokumentasi penyaluran donasi Al-Qur\'an',
