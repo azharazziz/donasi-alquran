@@ -8,12 +8,54 @@ import { useMemo } from 'react';
 import { SheetData, DetectedSchema } from '@/lib/types';
 import { formatValue } from '@/lib/formatter';
 
+interface DateRange {
+  start?: Date;
+  end?: Date;
+}
+
 interface DataTableProps {
   data: SheetData;
   schema: DetectedSchema;
   maxRows?: number;
   searchQuery?: string;
+  dateRange?: DateRange;
   onRowClick?: (rowData: Record<string, string | number | null>) => void;
+}
+
+/**
+ * Parse date string to Date object (normalized to midnight UTC)
+ * Handles Google Sheets format: Date(2026,0,4)
+ */
+function parseDate(dateStr: string | number | null): Date | null {
+  if (!dateStr) return null;
+
+  try {
+    let date: Date | null = null;
+
+    if (typeof dateStr === 'string') {
+      // Handle Google Sheets JavaScript date format: Date(2026,0,4)
+      if (dateStr.startsWith('Date(')) {
+        const match = dateStr.match(/Date\((\d+),(\d+),(\d+)\)/);
+        if (match) {
+          const [, year, month, day] = match;
+          // Create date in UTC to avoid timezone issues
+          date = new Date(Date.UTC(parseInt(year), parseInt(month), parseInt(day)));
+        }
+      } else {
+        date = new Date(dateStr);
+      }
+    } else if (typeof dateStr === 'number') {
+      // Google Sheets serial date format
+      date = new Date((dateStr - 25567) * 86400 * 1000);
+    }
+
+    if (!date || isNaN(date.getTime())) return null;
+
+    // Normalize to midnight UTC
+    return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+  } catch {
+    return null;
+  }
 }
 
 export function DataTable({
@@ -21,20 +63,45 @@ export function DataTable({
   schema,
   maxRows = 50,
   searchQuery = '',
+  dateRange,
   onRowClick,
 }: DataTableProps) {
   const filteredRows = useMemo(() => {
-    if (!searchQuery) return data.rows.slice(0, maxRows);
+    let rows = data.rows;
 
-    const query = searchQuery.toLowerCase();
-    return data.rows
-      .filter((row) => {
+    // Apply date range filter
+    if (dateRange?.start || dateRange?.end) {
+      if (schema.primaryDate) {
+        rows = rows.filter((row) => {
+          const dateValue = row[schema.primaryDate!];
+          const rowDate = parseDate(dateValue);
+
+          if (!rowDate) return false;
+
+          // Normalize filter dates to midnight UTC
+          const startDate = dateRange.start ? new Date(Date.UTC(dateRange.start.getUTCFullYear(), dateRange.start.getUTCMonth(), dateRange.start.getUTCDate())) : null;
+          const endDate = dateRange.end ? new Date(Date.UTC(dateRange.end.getUTCFullYear(), dateRange.end.getUTCMonth(), dateRange.end.getUTCDate())) : null;
+
+          if (startDate && rowDate < startDate) return false;
+          if (endDate && rowDate > endDate) return false;
+
+          return true;
+        });
+      }
+    }
+
+    // Apply search query filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      rows = rows.filter((row) => {
         return Object.values(row).some((val) => {
           return String(val).toLowerCase().includes(query);
         });
-      })
-      .slice(0, maxRows);
-  }, [data.rows, searchQuery, maxRows]);
+      });
+    }
+
+    return rows.slice(0, maxRows);
+  }, [data.rows, searchQuery, dateRange, schema.primaryDate, maxRows]);
 
   if (data.headers.length === 0) {
     return (

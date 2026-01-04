@@ -17,6 +17,39 @@ interface GalleryProps {
   error?: string;
 }
 
+/**
+ * Parse date string to Date object (normalized to midnight UTC)
+ * Handles Google Sheets format: Date(2026,0,4)
+ */
+function parseDate(dateStr: string | null | undefined): Date | null {
+  if (!dateStr) return null;
+
+  try {
+    let date: Date | null = null;
+
+    if (typeof dateStr === 'string') {
+      // Handle Google Sheets JavaScript date format: Date(2026,0,4)
+      if (dateStr.startsWith('Date(')) {
+        const match = dateStr.match(/Date\((\d+),(\d+),(\d+)\)/);
+        if (match) {
+          const [, year, month, day] = match;
+          // Create date in UTC to avoid timezone issues
+          date = new Date(Date.UTC(parseInt(year), parseInt(month), parseInt(day)));
+        }
+      } else {
+        date = new Date(dateStr);
+      }
+    }
+
+    if (!date || isNaN(date.getTime())) return null;
+
+    // Normalize to midnight UTC
+    return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+  } catch {
+    return null;
+  }
+}
+
 export default function Gallery({ images, loading = false, error }: GalleryProps) {
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
   const [imageError, setImageError] = useState<Record<string, boolean>>({});
@@ -84,11 +117,16 @@ export default function Gallery({ images, loading = false, error }: GalleryProps
             {/* Date badge */}
             {image.date && (
               <div className="absolute top-2 right-2 bg-navy-900/80 text-white text-xs px-2 py-1 rounded-full">
-                {new Date(image.date).toLocaleDateString('id-ID', {
-                  year: 'numeric',
-                  month: 'short',
-                  day: 'numeric',
-                })}
+                {(() => {
+                  const parsedDate = parseDate(image.date);
+                  return parsedDate
+                    ? parsedDate.toLocaleDateString('id-ID', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                      })
+                    : image.date;
+                })()}
               </div>
             )}
 
@@ -144,12 +182,17 @@ export default function Gallery({ images, loading = false, error }: GalleryProps
                 {selectedImage.date && (
                   <p>
                     <span className="font-medium">Tanggal:</span>{' '}
-                    {new Date(selectedImage.date).toLocaleDateString('id-ID', {
-                      weekday: 'long',
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}
+                    {(() => {
+                      const parsedDate = parseDate(selectedImage.date);
+                      return parsedDate
+                        ? parsedDate.toLocaleDateString('id-ID', {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                          })
+                        : selectedImage.date;
+                    })()}
                   </p>
                 )}
                 {selectedImage.category && (

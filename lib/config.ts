@@ -57,7 +57,8 @@ export const CONFIG = {
    * Gallery configuration
    */
   GALLERY_SPREADSHEET_ID: process.env.NEXT_PUBLIC_GALLERY_SPREADSHEET_ID,
-  GALLERY_IMAGE_COLUMN: 'Gambar URL',
+  GALLERY_SHEET_NAME: process.env.NEXT_PUBLIC_GALLERY_SHEET || 'galeri',
+  GALLERY_IMAGE_COLUMN: 'Gambar Url',
   GALLERY_CAPTION_COLUMN: 'Keterangan',
   GALLERY_DATE_COLUMN: 'Tanggal',
 

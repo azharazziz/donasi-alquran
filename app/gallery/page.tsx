@@ -18,12 +18,21 @@ async function fetchGalleryImages(): Promise<GalleryImage[]> {
       return [];
     }
 
+    console.log('Fetching gallery from spreadsheet:', CONFIG.GALLERY_SPREADSHEET_ID);
+
     const data = await fetchSheetData(
       CONFIG.GALLERY_SPREADSHEET_ID,
-      'Galeri'
+      CONFIG.GALLERY_SHEET_NAME
     );
 
+    console.log('Gallery data fetched:', {
+      headers: data.headers,
+      rowCount: data.rows?.length,
+      sampleRow: data.rows?.[0]
+    });
+
     if (!data.rows || data.rows.length === 0) {
+      console.warn('No data found in Galeri sheet');
       return [];
     }
 

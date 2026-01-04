@@ -14,6 +14,7 @@ import { DataTable } from '@/components/DataTable';
 import { DynamicChart } from '@/components/DynamicChart';
 import SheetSelector from '@/components/SheetSelector';
 import { DashboardHeader } from '@/components/DashboardHeader';
+import { FilterPanel } from '@/components/FilterPanel';
 
 interface SheetInfo {
   id: string;
@@ -114,61 +115,20 @@ export function DashboardClient({
             })}
           </div>
 
-          {/* Filters */}
-          <div className="bg-white rounded-lg p-6 mb-8 border border-gray-200">
-            <div className="flex flex-col gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Cari Data
-                </label>
-                <input
-                  type="text"
-                  placeholder="Cari di semua kolom..."
-                  value={filters.searchQuery}
-                  onChange={(e) => handleSearchChange(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-400"
-                />
-              </div>
+          {/* Filters - Using FilterPanel component */}
+          <FilterPanel
+            schema={initialSchema}
+            onSearchChange={handleSearchChange}
+            onDateRangeChange={handleDateRangeChange}
+            searchQuery={filters.searchQuery}
+            dateStart={filters.dateRange.start}
+            dateEnd={filters.dateRange.end}
+          />
 
-              {initialSchema.primaryDate && (
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Dari Tanggal
-                    </label>
-                    <input
-                      type="date"
-                      onChange={(e) =>
-                        handleDateRangeChange(
-                          e.target.value ? new Date(e.target.value) : undefined,
-                          filters.dateRange.end
-                        )
-                      }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-400"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Sampai Tanggal
-                    </label>
-                    <input
-                      type="date"
-                      onChange={(e) =>
-                        handleDateRangeChange(
-                          filters.dateRange.start,
-                          e.target.value ? new Date(e.target.value) : undefined
-                        )
-                      }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-400"
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
+          <div className="mt-8"></div>
 
           {/* Chart */}
-          {CONFIG.FEATURES.enableCharts && (
+          {CONFIG.FEATURES.enableCharts && CONFIG.CHART_CONFIGS[currentSheet as keyof typeof CONFIG.CHART_CONFIGS]?.enabled && (
             <div className="bg-white rounded-lg p-6 mb-8 border border-gray-200">
               <h2 className="text-xl font-semibold text-navy-900 mb-4">
                 {CONFIG.CHART_CONFIGS[currentSheet as keyof typeof CONFIG.CHART_CONFIGS]?.label || 'Visualisasi Data'}
@@ -193,6 +153,7 @@ export function DashboardClient({
                 schema={initialSchema}
                 maxRows={100}
                 searchQuery={filters.searchQuery}
+                dateRange={filters.dateRange}
               />
             </ErrorBoundary>
           </div>
@@ -227,6 +188,17 @@ export function DashboardClient({
               </p>
               <p className="mt-1">
                 © 2026 {CONFIG.ORG_NAME}. Platform transparansi donasi.
+              </p>
+              <p className="mt-2">
+                Dikembangkan oleh{' '}
+                <a
+                  href="https://azharazziz.github.io"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gold-400 hover:text-gold-500 transition-colors"
+                >
+                  Azhar Azziz
+                </a>
               </p>
             </div>
           </div>

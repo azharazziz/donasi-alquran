@@ -2,15 +2,52 @@
  * Landing page with Islamic design
  */
 
-'use client';
-
 import Link from 'next/link';
 import { CONFIG } from '@/lib/config';
+import { fetchSheetData } from '@/lib/sheetFetcher';
+import { detectColumns } from '@/lib/columnDetection';
+import { formatCurrency } from '@/lib/formatter';
+import { DonationCountdown } from '@/components/DonationCountdown';
+import { DonateButton } from '@/components/DonateButton';
+import { InitiatorCarousel } from '@/components/InitiatorCarousel';
+import { getInitiatorLogos } from '@/lib/initiatorLogos';
 
-export default function Home() {
-  const handleDonateClick = () => {
-    alert('Fitur donasi akan segera tersedia');
-  };
+export const revalidate = 300; // Revalidate every 5 minutes
+
+export default async function Home() {
+  let totalDonation = 0;
+  let donationDataError = false;
+  let initiatorLogos: { name: string; url: string }[] = [];
+
+  try {
+    // Fetch donations data
+    const donationsSheetName = CONFIG.SHEET_MAPPING['donations-in'] || CONFIG.SHEET_NAME;
+    const data = await fetchSheetData(CONFIG.SHEET_ID, donationsSheetName);
+    
+    if (data.rows.length > 0) {
+      const schema = detectColumns(data.headers);
+      
+      // Calculate total from monetary column
+      if (schema.primaryMonetary) {
+        totalDonation = data.rows.reduce((sum, row) => {
+          const value = row[schema.primaryMonetary!];
+          const num = parseFloat(String(value).replace(/[^0-9.-]/g, '')) || 0;
+          return sum + num;
+        }, 0);
+      }
+    }
+  } catch (err) {
+    donationDataError = true;
+    console.error('Error fetching donation data:', err);
+  }
+
+  // Load initiator logos from folder
+  try {
+    initiatorLogos = await getInitiatorLogos();
+  } catch (err) {
+    console.error('Error loading initiator logos:', err);
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-navy-950 via-navy-900 to-navy-900 text-white overflow-hidden">
       {/* Islamic geometric pattern background */}
@@ -62,14 +99,30 @@ export default function Home() {
           >
             📸 Galeri Bukti Penyaluran
           </Link>
-          <button
-            onClick={handleDonateClick}
-            className="inline-flex items-center justify-center px-8 py-4 border-2 border-gold-400 text-gold-400 rounded-lg font-semibold text-lg hover:bg-gold-400 hover:text-navy-900 transition-all cursor-pointer"
-          >
-            💝 Ikut Donasi
-          </button>
         </div>
       </section>
+
+      {/* Stats Section with Total Donation */}
+      <section className="relative z-10 max-w-7xl mx-auto px-6 py-16">
+        <div className="bg-gradient-to-r from-gold-400 to-gold-500 rounded-lg p-8 md:p-12 text-navy-900">
+          <h2 className="text-3xl font-serif font-bold mb-8 text-center">Total Donasi Diterima</h2>
+
+          <div className="text-center">
+            <div className="text-5xl font-bold mb-8">
+              {donationDataError ? '-' : formatCurrency(totalDonation)}
+            </div>
+
+            <DonationCountdown deadline={process.env.NEXT_PUBLIC_DONATION_DEADLINE || '2026-03-31 23:59:59'} />
+
+            <div className="mt-8">
+              <DonateButton />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Initiator Carousel */}
+      <InitiatorCarousel logos={initiatorLogos} />
 
       {/* Features Grid */}
       <section className="relative z-10 max-w-7xl mx-auto px-6 py-16">
@@ -120,28 +173,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="relative z-10 max-w-7xl mx-auto px-6 py-16">
-        <div className="bg-gradient-to-r from-gold-400 to-gold-500 rounded-lg p-8 md:p-12 text-navy-900">
-          <h2 className="text-3xl font-serif font-bold mb-8 text-center">Dampak Donasi</h2>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="text-4xl font-bold mb-2">1000+</div>
-              <p className="text-navy-900/80">Donasi Diproses</p>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold mb-2">50K+</div>
-              <p className="text-navy-900/80">Penerima Manfaat</p>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold mb-2">100%</div>
-              <p className="text-navy-900/80">Transparansi Data</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="relative z-10 max-w-7xl mx-auto px-6 py-16 text-center">
         <h2 className="text-3xl font-serif font-bold mb-6">Siap Membantu?</h2>
@@ -153,16 +184,27 @@ export default function Home() {
           href="/dashboard"
           className="inline-flex items-center justify-center px-8 py-4 bg-gold-400 text-navy-900 rounded-lg font-semibold text-lg hover:bg-yellow-500 transition-all hover:scale-105"
         >
-          Lihat Data & Galeri →
+            Ada pertanyaan?
         </Link>
       </section>
 
       {/* Footer */}
       <footer className="relative z-10 border-t border-gold-400/20 mt-16 py-8 text-center text-gray-400">
         <p className="mb-2">© 2026 {CONFIG.ORG_NAME}. Platform Transparansi Donasi.</p>
-        <p className="text-sm">
+        <p className="text-sm mb-4">
           Dibangun dengan ❤️ untuk meningkatkan kepercayaan dan transparansi dalam setiap program
           sosial.
+        </p>
+        <p className="text-xs text-gray-500">
+          Dikembangkan oleh{' '}
+          <a
+            href="https://azharazziz.github.io"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gold-400 hover:text-gold-300 transition-colors"
+          >
+            Azhar Azziz
+          </a>
         </p>
       </footer>
     </div>
