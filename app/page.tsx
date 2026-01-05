@@ -10,6 +10,8 @@ import { formatCurrency } from '@/lib/formatter';
 import { DonationCountdown } from '@/components/DonationCountdown';
 import { DonateButton } from '@/components/DonateButton';
 import { InitiatorCarousel } from '@/components/InitiatorCarousel';
+import { RamadanOrnaments } from '@/components/RamadanOrnaments';
+import { IslamicPatternBg } from '@/components/IslamicPatternBg';
 import { getInitiatorLogos } from '@/lib/initiatorLogos';
 
 export const revalidate = 300; // Revalidate every 5 minutes
@@ -49,7 +51,13 @@ export default async function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-navy-950 via-navy-900 to-navy-900 text-white overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-navy-950 via-navy-900 to-navy-900 text-white overflow-hidden relative">
+      {/* Islamic seamless pattern background */}
+      <IslamicPatternBg />
+
+      {/* Ramadan ornaments */}
+      <RamadanOrnaments />
+
       {/* Islamic geometric pattern background */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-0 left-0 w-96 h-96 bg-gold-400 rounded-full mix-blend-multiply filter blur-3xl"></div>
@@ -57,18 +65,26 @@ export default async function Home() {
       </div>
 
       {/* Navigation */}
-      <nav className="relative z-10 flex justify-between items-center p-6 max-w-7xl mx-auto">
-        <div className="flex items-center gap-2">
-          <div className="text-2xl">📖</div>
-          <span className="font-serif text-xl font-bold">{CONFIG.ORG_NAME}</span>
-        </div>
-        <Link
-          href="/dashboard"
-          className="px-6 py-2 bg-gold-400 text-navy-900 rounded-lg font-semibold hover:bg-gold-500 transition-colors"
-        >
-          Lihat Laporan
-        </Link>
-      </nav>
+      <div className="fixed top-0 left-0 right-0 bg-navy-900 text-white shadow-lg z-50">
+        <nav className="max-w-7xl mx-auto px-4 py-8 flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <div className="text-4xl">📖</div>
+            <div>
+              <h1 className="text-3xl font-bold font-serif">{CONFIG.ORG_NAME}</h1>
+              <p className="text-gold-400 text-sm">Donasi Al-Quran 2026</p>
+            </div>
+          </div>
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-gold-400 text-navy-900 rounded-lg font-semibold hover:bg-yellow-500 transition-colors"
+          >
+            Lihat Laporan
+          </Link>
+        </nav>
+      </div>
+
+      {/* Spacer for fixed header */}
+      <div className="h-28"></div>
 
       {/* Hero Section */}
       <section className="relative z-10 max-w-7xl mx-auto px-6 py-24 text-center">
@@ -189,23 +205,25 @@ export default async function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-gold-400/20 mt-16 py-8 text-center text-gray-400">
-        <p className="mb-2">© 2026 {CONFIG.ORG_NAME}. Platform Transparansi Donasi.</p>
-        <p className="text-sm mb-4">
-          Dibangun dengan ❤️ untuk meningkatkan kepercayaan dan transparansi dalam setiap program
-          sosial.
-        </p>
-        <p className="text-xs text-gray-500">
-          Dikembangkan oleh{' '}
-          <a
-            href="https://azharazziz.github.io"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-gold-400 hover:text-gold-300 transition-colors"
-          >
-            Azhar Azziz
-          </a>
-        </p>
+      <footer className="bg-navy-900 border-t border-gold-400/20 py-8 text-center text-gray-400 relative z-50">
+        <div className="max-w-7xl mx-auto px-4">
+          <p className="mb-2">© 2026 {CONFIG.ORG_NAME}. Platform Transparansi Donasi.</p>
+          <p className="text-sm mb-4">
+            Dibangun dengan ❤️ untuk meningkatkan kepercayaan dan transparansi dalam setiap program
+            sosial.
+          </p>
+          <p className="text-xs text-gray-500">
+            Dikembangkan oleh{' '}
+            <a
+              href="https://azharazziz.github.io"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gold-400 hover:text-gold-300 transition-colors"
+            >
+              Azhar Azziz
+            </a>
+          </p>
+        </div>
       </footer>
     </div>
   );

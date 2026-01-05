@@ -18,14 +18,15 @@ export function InitiatorCarousel({ logos }: InitiatorCarouselProps) {
     return null;
   }
 
-  // Duplicate logos for infinite scroll effect
+  // Duplicate logos for infinite scroll effect (only for desktop)
   const doubledLogos = [...logos, ...logos];
 
   return (
     <section className="relative z-10 max-w-7xl mx-auto px-6 py-16">
       <h2 className="text-3xl font-serif font-bold text-center mb-12 text-white">Diprakarsai Oleh</h2>
 
-      <div className="relative overflow-hidden bg-white/5 backdrop-blur-sm rounded-lg p-8 border border-gold-400/20">
+      {/* Desktop carousel view */}
+      <div className="hidden md:block relative overflow-hidden bg-white/5 backdrop-blur-sm rounded-lg p-8 border border-gold-400/20">
         {/* Gradient overlays for fade effect */}
         <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-navy-950 to-transparent z-10"></div>
         <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-navy-950 to-transparent z-10"></div>
@@ -47,6 +48,25 @@ export function InitiatorCarousel({ logos }: InitiatorCarouselProps) {
               </div>
             ))}
           </div>
+        </div>
+      </div>
+
+      {/* Mobile grid view */}
+      <div className="md:hidden bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-gold-400/20">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          {logos.map((logo, idx) => (
+            <div
+              key={idx}
+              className="h-20 flex items-center justify-center rounded-lg p-3 hover:shadow-lg transition-shadow"
+            >
+              <img
+                src={logo.url}
+                alt={logo.name}
+                className="max-w-full max-h-full object-contain"
+                style={{ width: 'auto', height: '100%' }}
+              />
+            </div>
+          ))}
         </div>
       </div>
 
