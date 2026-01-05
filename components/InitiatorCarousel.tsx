@@ -37,7 +37,7 @@ export function InitiatorCarousel({ logos }: InitiatorCarouselProps) {
             {doubledLogos.map((logo, idx) => (
               <div
                 key={idx}
-                className="flex-shrink-0 h-24 flex items-center justify-center rounded-lg p-4 hover:shadow-lg transition-shadow"
+                className="flex-shrink-0 h-24 flex items-center justify-center rounded-lg p-4 transition-all"
               >
                 <img
                   src={logo.url}
@@ -57,7 +57,7 @@ export function InitiatorCarousel({ logos }: InitiatorCarouselProps) {
           {logos.map((logo, idx) => (
             <div
               key={idx}
-              className="h-20 flex items-center justify-center rounded-lg p-3 hover:shadow-lg transition-shadow"
+              className="h-20 flex items-center justify-center rounded-lg p-3"
             >
               <img
                 src={logo.url}
