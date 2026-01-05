@@ -31,7 +31,7 @@ interface DynamicChartProps {
 }
 
 const COLORS = [
-  '#1a1f3a',
+  '#003B7C',
   '#d4af37',
   '#c9a961',
   '#2d3561',
@@ -66,12 +66,22 @@ export function DynamicChart({
         return dateA - dateB;
       });
 
-      const limitedRows = sortedRows.slice(0, maxDataPoints);
+      // Aggregate data by date (sum values with same date)
+      const dateAggregates = new Map<string, { name: string; value: number }>();
+      
+      sortedRows.forEach((row) => {
+        const dateStr = String(row[schema.primaryDate!]);
+        const formattedDate = formatDateShort(dateStr);
+        const amount = parseFloat(String(row[schema.primaryMonetary!])) || 0;
+        
+        const existing = dateAggregates.get(formattedDate) || { name: formattedDate, value: 0 };
+        dateAggregates.set(formattedDate, {
+          name: formattedDate,
+          value: existing.value + amount,
+        });
+      });
 
-      const timeSeriesData = limitedRows.map((row) => ({
-        name: formatDateShort(String(row[schema.primaryDate!])),
-        value: parseFloat(String(row[schema.primaryMonetary!])) || 0,
-      }));
+      const timeSeriesData = Array.from(dateAggregates.values()).slice(0, maxDataPoints);
 
       return { type: 'line', data: timeSeriesData };
     }
@@ -133,7 +143,7 @@ export function DynamicChart({
             <YAxis stroke="#6b7280" />
             <Tooltip
               contentStyle={{
-                backgroundColor: '#1a1f3a',
+                backgroundColor: '#003B7C',
                 border: 'none',
                 borderRadius: '8px',
                 color: '#fff',
@@ -145,7 +155,7 @@ export function DynamicChart({
               type="monotone"
               dataKey="value"
               stroke="#d4af37"
-              dot={{ fill: '#1a1f3a' }}
+              dot={{ fill: '#003B7C' }}
               name={chartLabel}
               isAnimationActive={false}
             />
@@ -177,7 +187,7 @@ export function DynamicChart({
             <YAxis stroke="#6b7280" />
             <Tooltip
               contentStyle={{
-                backgroundColor: '#1a1f3a',
+                backgroundColor: '#003B7C',
                 border: 'none',
                 borderRadius: '8px',
                 color: '#fff',

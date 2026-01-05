@@ -9,7 +9,7 @@ const config = {
       colors: {
         navy: {
           50: '#f0f2f9',
-          900: '#1a1f3a',
+          900: '#003B7C',
           950: '#0f1219',
         },
         gold: {

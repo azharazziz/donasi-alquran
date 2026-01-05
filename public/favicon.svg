@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <rect width="256" height="256" fill="#003B7C"/>
+  <g transform="translate(128, 128)">
+    <!-- Quran book shape -->
+    <path d="M -40 -50 L -40 50 L 40 50 L 40 -50 Z" fill="#d4af37" stroke="#c9a961" stroke-width="2"/>
+    <!-- Book spine -->
+    <rect x="-38" y="-48" width="4" height="96" fill="#c9a961"/>
+    <!-- Decorative pattern -->
+    <circle cx="-20" cy="-20" r="3" fill="#003B7C"/>
+    <circle cx="0" cy="-20" r="3" fill="#003B7C"/>
+    <circle cx="20" cy="-20" r="3" fill="#003B7C"/>
+    <circle cx="-20" cy="0" r="3" fill="#003B7C"/>
+    <circle cx="0" cy="0" r="5" fill="#003B7C"/>
+    <circle cx="20" cy="0" r="3" fill="#003B7C"/>
+    <circle cx="-20" cy="20" r="3" fill="#003B7C"/>
+    <circle cx="0" cy="20" r="3" fill="#003B7C"/>
+    <circle cx="20" cy="20" r="3" fill="#003B7C"/>
+  </g>
+</svg>

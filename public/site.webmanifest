@@ -1,0 +1,70 @@
+{
+  "name": "Donasi Al-Qur'an - Laporan Transparansi",
+  "short_name": "Donasi Al-Qur'an",
+  "description": "Platform transparansi donasi Al-Qur'an dengan laporan real-time dan visualisasi data lengkap",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "lang": "id",
+  "dir": "ltr",
+  "background_color": "#ffffff",
+  "theme_color": "#003B7C",
+  "categories": ["charity", "nonprofit"],
+  "screenshots": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "form_factor": "wide"
+    }
+  ],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Laporan Donasi",
+      "short_name": "Donasi",
+      "description": "Lihat laporan donasi masuk",
+      "url": "/dashboard?sheet=donations-in",
+      "icons": [
+        {
+          "src": "/favicon.svg",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Galeri",
+      "short_name": "Galeri",
+      "description": "Lihat dokumentasi penyaluran",
+      "url": "/gallery",
+      "icons": [
+        {
+          "src": "/favicon.svg",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ]
+}
