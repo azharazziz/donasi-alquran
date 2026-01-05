@@ -75,8 +75,8 @@ export default async function Home() {
         <div className="mb-8">
           <div className="text-6xl md:text-7xl mb-4 animate-fade-in">📖</div>
           <h1 className="text-5xl md:text-6xl font-serif font-bold mb-4 leading-tight">
-            Platform Transparansi
-            <span className="block text-gold-400">Donasi Al-Qur'an</span>
+            Donasi Al-Quran
+            <span className="block text-gold-400">2026</span>
           </h1>
         </div>
 
